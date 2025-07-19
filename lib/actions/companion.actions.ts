@@ -5,6 +5,7 @@ import { createSupabaseClient } from "../supabase";
 
 export const createCompanion = async (formData: CreateCompanion) => {
     const { userId: author } = await auth(); //rename the clerk_userId as author
+    console.log('author:', author);
     const supabase = createSupabaseClient();
     const { data, error } = await supabase
         .from('companions')
