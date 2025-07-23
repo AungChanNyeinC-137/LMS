@@ -1,41 +1,45 @@
 'use client';
 
-import {usePathname, useRouter, useSearchParams} from "next/navigation";
-import {useEffect, useState} from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import {formUrlQuery, removeKeysFromUrlQuery} from "@jsmastery/utils";
+import { formUrlQuery, removeKeysFromUrlQuery } from "@jsmastery/utils";
 
 const SearchInput = () => {
     const pathname = usePathname();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const query = searchParams.get('topic') || '';
 
-    const [searchQuery, setSearchQuery] = useState('');
+    // 1. Initialize state with the URL search parameter.
+    const [searchQuery, setSearchQuery] = useState(searchParams.get('topic') || '');
 
     useEffect(() => {
+        // Create the timeout.
         const delayDebounceFn = setTimeout(() => {
-            if(searchQuery) {
+            if (searchQuery) {
                 const newUrl = formUrlQuery({
                     params: searchParams.toString(),
                     key: "topic",
                     value: searchQuery,
                 });
-
                 router.push(newUrl, { scroll: false });
             } else {
-                if(pathname === '/companions') {
+                // Only remove the key if we are on the correct page.
+                if (pathname === '/companions') {
                     const newUrl = removeKeysFromUrlQuery({
                         params: searchParams.toString(),
                         keysToRemove: ["topic"],
                     });
-
                     router.push(newUrl, { scroll: false });
                 }
             }
-        }, 500)
-    }, [searchQuery, router, searchParams, pathname]);
+        }, 500);
 
+        // 2. Add a cleanup function to clear the timeout.
+        return () => clearTimeout(delayDebounceFn);
+        
+    }, [searchQuery, router, searchParams, pathname]);
+    
     return (
         <div className="relative border border-black rounded-lg items-center flex gap-2 px-2 py-1 h-fit">
             <Image src="/icons/search.svg" alt="search" width={15} height={15} />
@@ -48,4 +52,4 @@ const SearchInput = () => {
         </div>
     )
 }
-export default SearchInput
+export default SearchInput;
