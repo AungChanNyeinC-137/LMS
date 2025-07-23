@@ -10,16 +10,17 @@ import {
 import { cn, getSubjectColor } from '@/lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
+import { title } from 'process';
 
 interface CompanionListProps {
   title: string;
-  companions?: Companion[];
-  classNames: string;
+  companions: Companion[];
+  classNames?: string;
 }
-const CompanionsList = ({ companions, classNames }: CompanionListProps) => {
+const CompanionsList = ({title, companions, classNames }: CompanionListProps) => {
   return (
     <article className={cn('companion-list', classNames)}>
-      <h2 className='font-bold text-3xl'>Recent Sessions</h2>
+      <h2 className='font-bold text-3xl'>{title}</h2>
       <Table>
         <TableHeader>
           <TableRow>
